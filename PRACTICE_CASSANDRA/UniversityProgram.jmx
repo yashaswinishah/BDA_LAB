@@ -1,0 +1,60 @@
+bmsce@bmsce-Precision-T1700:~$ cqlsh
+Connected to Test Cluster at 127.0.0.1:9042.
+[cqlsh 5.0.1 | Cassandra 3.11.4 | CQL spec 3.4.4 | Native protocol v4]
+Use HELP for help.
+cqlsh> CREATE KEYSPACE Universityy WITH REPLICATION = {'class' : 'SimpleStrategy' , 'replication_factor' :3};
+cqlsh> CREATE TABLE Universityy.Student(RollNo int, Name text, dept text, PRIMARY KEY(RollNo);
+SyntaxException: line 1:86 mismatched input ';' expecting ')' (... text, PRIMARY KEY(RollNo)[;])
+cqlsh> CREATE TABLE Universityy.Student(RollNo int, Name text, dept text, PRIMARY KEY(RollNo));
+cqlsh> ALTER TABLE UNiversityy.Student ADD Semester int;
+cqlsh> DESC Universityy.Student
+
+CREATE TABLE universityy.student (
+    rollno int PRIMARY KEY,
+    dept text,
+    name text,
+    semester int
+) WITH bloom_filter_fp_chance = 0.01
+    AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
+    AND comment = ''
+    AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}
+    AND compression = {'chunk_length_in_kb': '64', 'class': 'org.apache.cassandra.io.compress.LZ4Compressor'}
+    AND crc_check_chance = 1.0
+    AND dclocal_read_repair_chance = 0.1
+    AND default_time_to_live = 0
+    AND gc_grace_seconds = 864000
+    AND max_index_interval = 2048
+    AND memtable_flush_period_in_ms = 0
+    AND min_index_interval = 128
+    AND read_repair_chance = 0.0
+    AND speculative_retry = '99PERCENTILE';
+
+cqlsh> INSERT into Universityy.Student(RollNo,Name,dept,Semester) values (2,'Michael','cs',2);
+cqlsh> Update UNiversityy.Student SET name='Hailey' WHERE RollNo=1;
+cqlsh> DELETE from Universityy.Student WHERE RollNo=1;
+cqlsh> CREATE index DeptIndex on Universityy.Student(dept);
+cqlsh> select * from Universityy.Student WHERE dept='cs' ;
+
+ rollno | dept | name    | semester
+--------+------+---------+----------
+      2 |   cs | Michael |        2
+
+(1 rows)
+cqlsh> INSERT into Universityy.Student(rollno,name,dept,semester) values (3,'Ginny','cs',7) using ttl 100;
+cqlsh> CREATE TABLE Universityy.Teacher(id int, Name text, Email set<text>,PRIMARY KEY(id));
+cqlsh> ALTER TABLE Universityy.Teacher add coursenames list<text>;
+cqlsh> INSERT into UNiversityy.Teacher(id,Name,Email,coursenames) values(2,'Harry',{'harry@gmail.com'},['Data Science']);
+cqlsh> SELECT * FROM Universityy.Teacher
+   ... ;
+
+ id | coursenames      | email               | name
+----+------------------+---------------------+-------
+  2 | ['Data Science'] | {'harry@gmail.com'} | Harry
+
+(1 rows)
+cqlsh> CREATE TABLE Universityy.Course(id int,prereq map<text,text>, PRIMARY KEY(id));
+cqlsh> INSERT into Universityy.Course(id,prereq) values(1,{'DataScience':'Database','Neutral Network':'Artificial Intelligence'});
+cqlsh> TRUNCATE Universityy.Student;
+cqlsh> DROP TABLE Universityy.Student;
+cqlsh> 
+
