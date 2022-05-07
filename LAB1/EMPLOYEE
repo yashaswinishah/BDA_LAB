@@ -1,0 +1,132 @@
+bmsce@bmsce-Precision-T1700:~$ cqlsh
+Connected to Test Cluster at 127.0.0.1:9042.
+[cqlsh 5.0.1 | Cassandra 3.11.4 | CQL spec 3.4.4 | Native protocol v4]
+Use HELP for help.
+
+--1.Create a keyspace by name Employee
+
+cqlsh> create keyspace Employeee with replication = {'class' : 'SimpleStrategy', 'replication_factor' : 1};
+cqlsh> DESCRIBE KEYSPACES;
+
+library1       system_auth  students1    system_distributed  studentss 
+employee1      system       universityy  employee            employeee 
+system_schema  library      studentinfo  system_traces       university
+
+-- 2. Create a column family by name Employee-Info with attributes,Emp_Id Primary Key, Emp_Name,Designation, Date_of_Joining, Salary,Dept_Name
+
+cqlsh> CREATE TABLE EMPLOYEEE.EMPLOYEE_INFO(Emp_id int PRIMARY KEY, Emp_name text,Designation text,DOJ timestamp,salary int,Dept_name text);
+
+--3. Insert the values into the table in batch
+
+cqlsh>    BEGIN BATCH
+   ... INSERT INTO EMPLOYEEE.EMPLOYEE_INFO(Emp_id,Emp_name,Designation,DOJ,Salary,Dept_name) VALUES (678,'Emily','manager','2018-12-12',6000000,'ISE');
+   ... INSERT INTO EMPLOYEEE.EMPLOYEE_INFO(Emp_id,Emp_name,Designation,DOJ,Salary,Dept_name) VALUES (345,'Sarah','junior employee','2020-02-21',2000000,'ME');
+   ... INSERT INTO EMPLOYEEE.EMPLOYEE_INFO(Emp_id,Emp_name,Designation,DOJ,Salary,Dept_name) VALUES (123,'Yashaswini','senior employee','2019-01-01',5000000,'CSE');
+   ... APPLY BATCH;
+   
+
+cqlsh> SELECT * FROM EMPLOYEEE.EMPLOYEE_INFO;
+
+ emp_id | dept_name | designation     | doj                             | emp_name   | salary
+--------+-----------+-----------------+---------------------------------+------------+---------
+    123 |       CSE | senior employee | 2018-12-31 18:30:00.000000+0000 | Yashaswini | 5000000
+    678 |       ISE |         manager | 2018-12-11 18:30:00.000000+0000 |      Emily | 6000000
+    345 |        ME | junior employee | 2020-02-20 18:30:00.000000+0000 |      Sarah | 2000000
+
+(3 rows)
+cqlsh> INSERT INTO EMPLOYEEE.EMPLOYEE_INFO(Emp_id,Emp_name,Designation,DOJ,SALARY, dept_name) VALUES (901,'Mandy','junior employee','2022-07-10',200000,'EEE');
+cqlsh> SELECT * FROM EMPLOYEEE.EMPLOYEE_INFO;
+
+ emp_id | dept_name | designation     | doj                             | emp_name   | salary
+--------+-----------+-----------------+---------------------------------+------------+---------
+    123 |       CSE | senior employee | 2018-12-31 18:30:00.000000+0000 | Yashaswini | 5000000
+    678 |       ISE |         manager | 2018-12-11 18:30:00.000000+0000 |      Emily | 6000000
+    901 |       EEE | junior employee | 2022-07-09 18:30:00.000000+0000 |      Mandy |  200000
+    345 |        ME | junior employee | 2020-02-20 18:30:00.000000+0000 |      Sarah | 2000000
+
+(4 rows)
+
+cqlsh> UPDATE EMPLOYEEE.EMPLOYEE_INFO SET emp_name='Milly' , dept_name='CSE' WHERE emp_id=901;
+cqlsh> SELECT * FROM EMPLOYEEE.EMPLOYEE_INFO;
+
+ emp_id | dept_name | designation     | doj                             | emp_name   | salary
+--------+-----------+-----------------+---------------------------------+------------+---------
+    123 |       CSE | senior employee | 2018-12-31 18:30:00.000000+0000 | Yashaswini | 5000000
+    678 |       ISE |         manager | 2018-12-11 18:30:00.000000+0000 |      Emily | 6000000
+    901 |       CSE | junior employee | 2022-07-09 18:30:00.000000+0000 |      Milly |  200000
+    345 |        ME | junior employee | 2020-02-20 18:30:00.000000+0000 |      Sarah | 2000000
+
+(4 rows)
+
+cqlsh> USE EMPLOYEEE;
+cqlsh:employeee> ALTER TABLE EMPLOYEE_INFO ADD PROJECTS SET<text> ;
+cqlsh:employeee> SELECT * FROM EMPLOYEE_INFO;
+
+ emp_id | dept_name | designation     | doj                             | emp_name   | projects | salary
+--------+-----------+-----------------+---------------------------------+------------+----------+---------
+    123 |       CSE | senior employee | 2018-12-31 18:30:00.000000+0000 | Yashaswini |     null | 5000000
+    678 |       ISE |         manager | 2018-12-11 18:30:00.000000+0000 |      Emily |     null | 6000000
+    901 |       CSE | junior employee | 2022-07-09 18:30:00.000000+0000 |      Milly |     null |  200000
+    345 |        ME | junior employee | 2020-02-20 18:30:00.000000+0000 |      Sarah |     null | 2000000
+
+(4 rows)
+cqlsh:employeee> UPDATE EMPLOYEE_INFO SET PROJECTS=PROJECTS+{'WEBAPP','ANDROIDAPP'} WHERE EMP_ID=123;
+cqlsh:employeee> UPDATE EMPLOYEE_INFO SET PROJECTS=PROJECTS+{'WEBAPP','WEBAPP'} WHERE EMP_ID=123;
+cqlsh:employeee> UPDATE EMPLOYEE_INFO SET PROJECTS=PROJECTS+{'WEBAPP','ANDRIODAPP1.0'} WHERE EMP_ID=123;
+cqlsh:employeee> SELECT * FROM EMPLOYEE_INFO;
+
+ emp_id | dept_name | designation     | doj                             | emp_name   | projects                                  | salary
+--------+-----------+-----------------+---------------------------------+------------+-------------------------------------------+---------
+    123 |       CSE | senior employee | 2018-12-31 18:30:00.000000+0000 | Yashaswini | {'ANDRIODAPP1.0', 'ANDROIDAPP', 'WEBAPP'} | 5000000
+    678 |       ISE |         manager | 2018-12-11 18:30:00.000000+0000 |      Emily |                                      null | 6000000
+    901 |       CSE | junior employee | 2022-07-09 18:30:00.000000+0000 |      Milly |                                      null |  200000
+    345 |        ME | junior employee | 2020-02-20 18:30:00.000000+0000 |      Sarah |                                      null | 2000000
+
+(4 rows)
+cqlsh:employeee> UPDATE EMPLOYEE_INFO SET PROJECTS=PROJECTS+{'WEBAPP1','ANDRIODAPP1.0'} WHERE EMP_ID=678;
+cqlsh:employeee> UPDATE EMPLOYEE_INFO SET PROJECTS=PROJECTS+{'WEBAPP','ANDRIODAPP'} WHERE EMP_ID=901;
+cqlsh:employeee> SELECT * FROM EMPLOYEE_INFO;
+
+ emp_id | dept_name | designation     | doj                             | emp_name   | projects                                  | salary
+--------+-----------+-----------------+---------------------------------+------------+-------------------------------------------+---------
+    123 |       CSE | senior employee | 2018-12-31 18:30:00.000000+0000 | Yashaswini | {'ANDRIODAPP1.0', 'ANDROIDAPP', 'WEBAPP'} | 5000000
+    678 |       ISE |         manager | 2018-12-11 18:30:00.000000+0000 |      Emily |              {'ANDRIODAPP1.0', 'WEBAPP1'} | 6000000
+    901 |       CSE | junior employee | 2022-07-09 18:30:00.000000+0000 |      Milly |                  {'ANDRIODAPP', 'WEBAPP'} |  200000
+    345 |        ME | junior employee | 2020-02-20 18:30:00.000000+0000 |      Sarah |                                      null | 2000000
+
+(4 rows)
+cqlsh:employeee> UPDATE EMPLOYEE_INFO SET PROJECTS=PROJECTS+{'WEBAPP','ANDRIODAPP'} WHERE EMP_ID=345;
+cqlsh:employeee> SELECT * FROM EMPLOYEE_INFO;
+
+ emp_id | dept_name | designation     | doj                             | emp_name   | projects                                  | salary
+--------+-----------+-----------------+---------------------------------+------------+-------------------------------------------+---------
+    123 |       CSE | senior employee | 2018-12-31 18:30:00.000000+0000 | Yashaswini | {'ANDRIODAPP1.0', 'ANDROIDAPP', 'WEBAPP'} | 5000000
+    678 |       ISE |         manager | 2018-12-11 18:30:00.000000+0000 |      Emily |              {'ANDRIODAPP1.0', 'WEBAPP1'} | 6000000
+    901 |       CSE | junior employee | 2022-07-09 18:30:00.000000+0000 |      Milly |                  {'ANDRIODAPP', 'WEBAPP'} |  200000
+    345 |        ME | junior employee | 2020-02-20 18:30:00.000000+0000 |      Sarah |                  {'ANDRIODAPP', 'WEBAPP'} | 2000000
+
+(4 rows)
+cqlsh:employeee> INSERT INTO EMPLOYEEE.EMPLOYEE_INFO(Emp_id,Emp_name,Designation,DOJ,SALARY, dept_name) VALUES (556,'Rose',' employee','2021-07-10',4000000,'CSE') USING TTL 15;
+cqlsh:employeee> SELECT * FROM EMPLOYEE_INFO;
+
+ emp_id | dept_name | designation     | doj                             | emp_name   | projects                                  | salary
+--------+-----------+-----------------+---------------------------------+------------+-------------------------------------------+---------
+    123 |       CSE | senior employee | 2018-12-31 18:30:00.000000+0000 | Yashaswini | {'ANDRIODAPP1.0', 'ANDROIDAPP', 'WEBAPP'} | 5000000
+    678 |       ISE |         manager | 2018-12-11 18:30:00.000000+0000 |      Emily |              {'ANDRIODAPP1.0', 'WEBAPP1'} | 6000000
+    901 |       CSE | junior employee | 2022-07-09 18:30:00.000000+0000 |      Milly |                  {'ANDRIODAPP', 'WEBAPP'} |  200000
+    345 |        ME | junior employee | 2020-02-20 18:30:00.000000+0000 |      Sarah |                  {'ANDRIODAPP', 'WEBAPP'} | 2000000
+    556 |       CSE |        employee | 2021-07-09 18:30:00.000000+0000 |       Rose |                                      null | 4000000
+
+(5 rows)
+
+cqlsh:employeee> SELECT TTL(EMP_NAME) FROM EMPLOYEE_INFO WHERE EMP_ID=123;
+
+ ttl(emp_name)
+---------------
+          null
+
+(1 rows)
+
+
+
+cqlsh:employeee> 
