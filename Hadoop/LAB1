@@ -1,0 +1,93 @@
+hduser@bmsce-Precision-T1700:~$ start-all.sh
+This script is Deprecated. Instead use start-dfs.sh and start-yarn.sh
+Starting namenodes on [localhost]
+hduser@localhost's password: 
+localhost: namenode running as process 6894. Stop it first.
+hduser@localhost's password: 
+localhost: datanode running as process 7101. Stop it first.
+Starting secondary namenodes [0.0.0.0]
+hduser@0.0.0.0's password: 
+0.0.0.0: secondarynamenode running as process 7990. Stop it first.
+starting yarn daemons
+resourcemanager running as process 8161. Stop it first.
+hduser@localhost's password: 
+localhost: nodemanager running as process 8493. Stop it first.
+hduser@bmsce-Precision-T1700:~$ jps
+8161 ResourceManager
+21666 Jps
+7990 SecondaryNameNode
+8493 NodeManager
+7101 DataNode
+6894 NameNode
+hduser@bmsce-Precision-T1700:~$ hdfs fs -mkdir /yashaswini
+Error: Could not find or load main class fs
+hduser@bmsce-Precision-T1700:~$ hadoop fs -mkdir /yash
+hduser@bmsce-Precision-T1700:~$ hadoop fs -ls /
+Found 11 items
+drwxr-xr-x   - hduser supergroup          0 2022-06-01 10:39 /balaji
+drwxr-xr-x   - hduser supergroup          0 2022-06-03 14:55 /dhruv
+drwxr-xr-x   - hduser supergroup          0 2022-06-01 15:12 /hadooplab
+drwxr-xr-x   - hduser supergroup          0 2022-06-01 15:06 /nikita
+drwxr-xr-x   - hduser supergroup          0 2022-05-31 10:35 /sam
+drwxr-xr-x   - hduser supergroup          0 2022-06-03 12:11 /saurab
+drwxr-xr-x   - hduser supergroup          0 2019-10-24 10:59 /shria
+drwxrwxr-x   - hduser supergroup          0 2019-08-01 16:19 /tmp
+drwxr-xr-x   - hduser supergroup          0 2019-08-01 16:03 /user
+drwxr-xr-x   - hduser supergroup          0 2022-06-04 09:34 /yash
+drwxr-xr-x   - hduser supergroup          0 2022-06-01 10:09 /yk
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -ut /home/bmsce/Desktop/welcome.txt /yash/wc.txt
+-ut: Unknown command
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -put /home/bmsce/Desktop/welcome.txt /yash/wc.txt
+put: `/home/bmsce/Desktop/welcome.txt': No such file or directory
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -put /home/hduser/Desktop/welcome.txt /yash/wc.txt
+put: `/home/hduser/Desktop/welcome.txt': No such file or directory
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -put /home/hduser/Desktop/welcome.txt /yash/wc.txt
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -cat /yash/wc.txt
+welcomeeeee 
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -copyfromlocal /home/hduser/Desktop/welcome.txt /yash/wc.txt
+-copyfromlocal: Unknown command
+hduser@bmsce-Precision-T1700:~$ sudo nano abc.txt
+[sudo] password for hduser: 
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -copyfromlocal abc.txt /yash
+-copyfromlocal: Unknown command
+hduser@bmsce-Precision-T1700:~$ hdfs fs -copyfromlocal abc.txt /yash
+Error: Could not find or load main class fs
+hduser@bmsce-Precision-T1700:~$ hadoop fs -copyfromlocal abc.txt /yash
+-copyfromlocal: Unknown command
+hduser@bmsce-Precision-T1700:~$ hadoop fs -copyfromLocal abc.txt /yash
+-copyfromLocal: Unknown command
+hduser@bmsce-Precision-T1700:~$ hadoop fs -copyFromLocal abc.txt /yash
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -get /yash/wc.txt/home/hduser/Downloads/abbc.txt
+get: `/yash/wc.txt/home/hduser/Downloads/abbc.txt': No such file or directory
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -get /yash/wc.txt/home/hduser/Downloads/abcc.txt
+get: `/yash/wc.txt/home/hduser/Downloads/abcc.txt': No such file or directory
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -get /yash/wc.txt/home/hduser/Downloads/abbc.txt
+get: `/yash/wc.txt/home/hduser/Downloads/abbc.txt': No such file or directory
+hduser@bmsce-Precision-T1700:~$ hadoop fs -getfac1 /yash/
+-getfac1: Unknown command
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -get /abc/WC.txt /home/hduser/Downloads/WWC.txt
+get: `/abc/WC.txt': No such file or directory
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -get /yash/WC.txt /home/hduser/Downloads/WWC.txt
+get: `/yash/WC.txt': No such file or directory
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -get /yash/wc.txt /home/hduser/Downloads/abcc.txt
+get: `/home/hduser/Downloads/abcc.txt': File exists
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -getmerge /yash/wc.txt/yash/abcc.txt /home/hduser/Desktop /Merge.txt
+getmerge: `/yash/wc.txt/yash/abcc.txt': No such file or directory
+getmerge: `/home/hduser/Desktop': No such file or directory
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -copyToLocal /abc/WC.txt /home/hduser/Desktop
+copyToLocal: `/abc/WC.txt': No such file or directory
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -copyToLocal /yash/wc.txt /home/hduser/Desktop
+hduser@bmsce-Precision-T1700:~$ hadoop fs -mv /yash /FFF
+hduser@bmsce-Precision-T1700:~$ hadoop fs -ls /FFF
+Found 2 items
+-rw-r--r--   1 hduser supergroup         12 2022-06-04 09:52 /FFF/abc.txt
+-rw-r--r--   1 hduser supergroup         13 2022-06-04 09:45 /FFF/wc.txt
+hduser@bmsce-Precision-T1700:~$ hadoop fs -cp /CSE/  /LLL
+cp: `/CSE/': No such file or directory
+hduser@bmsce-Precision-T1700:~$ hadoop fs -cp /FFF/  /LLL
+hduser@bmsce-Precision-T1700:~$ hadoop fs -ls /LLL
+Found 2 items
+-rw-r--r--   1 hduser supergroup         12 2022-06-04 10:23 /LLL/abc.txt
+-rw-r--r--   1 hduser supergroup         13 2022-06-04 10:23 /LLL/wc.txt
+hduser@bmsce-Precision-T1700:~$ 
+
