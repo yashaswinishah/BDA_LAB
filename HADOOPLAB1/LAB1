@@ -1,0 +1,84 @@
+hduser@bmsce-Precision-T1700:~$ hadoop
+Usage: hadoop [--config confdir] COMMAND
+       where COMMAND is one of:
+  fs                   run a generic filesystem user client
+  version              print the version
+  jar <jar>            run a jar file
+  checknative [-a|-h]  check native hadoop and compression libraries availability
+  distcp <srcurl> <desturl> copy file or directories recursively
+  archive -archiveName NAME -p <parent path> <src>* <dest> create a hadoop archive
+  classpath            prints the class path needed to get the
+  credential           interact with credential providers
+                       Hadoop jar and the required libraries
+  daemonlog            get/set the log level for each daemon
+  trace                view and modify Hadoop tracing settings
+ or
+  CLASSNAME            run the class named CLASSNAME
+
+Most commands print help when invoked w/o parameters.
+hduser@bmsce-Precision-T1700:~$ su hduser
+Password: 
+hduser@bmsce-Precision-T1700:~$ cd /
+hduser@bmsce-Precision-T1700:/$ cd /usr/local/hadoop/sbin
+hduser@bmsce-Precision-T1700:/usr/local/hadoop/sbin$ start-all.sh
+This script is Deprecated. Instead use start-dfs.sh and start-yarn.sh
+Starting namenodes on [localhost]
+hduser@localhost's password: 
+localhost: starting namenode, logging to /usr/local/hadoop/logs/hadoop-hduser-namenode-bmsce-Precision-T1700.out
+hduser@localhost's password: 
+localhost: starting datanode, logging to /usr/local/hadoop/logs/hadoop-hduser-datanode-bmsce-Precision-T1700.out
+Starting secondary namenodes [0.0.0.0]
+hduser@0.0.0.0's password: 
+0.0.0.0: starting secondarynamenode, logging to /usr/local/hadoop/logs/hadoop-hduser-secondarynamenode-bmsce-Precision-T1700.out
+starting yarn daemons
+starting resourcemanager, logging to /usr/local/hadoop/logs/yarn-hduser-resourcemanager-bmsce-Precision-T1700.out
+hduser@localhost's password: 
+localhost: starting nodemanager, logging to /usr/local/hadoop/logs/yarn-hduser-nodemanager-bmsce-Precision-T1700.out
+hduser@bmsce-Precision-T1700:/usr/local/hadoop/sbin$ jps
+6882 Jps
+6053 DataNode
+5878 NameNode
+6760 NodeManager
+4363 org.eclipse.equinox.launcher_1.5.600.v20191014-2022.jar
+6427 ResourceManager
+6268 SecondaryNameNode
+hduser@bmsce-Precision-T1700:/usr/local/hadoop/sbin$ hadoop fs -ls /
+Found 4 items
+drwxr-xr-x   - hduser supergroup          0 2022-06-14 10:14 /output
+drwxr-xr-x   - hduser supergroup          0 2022-06-14 10:08 /rgs
+drwxrwxr-x   - hduser supergroup          0 2019-08-01 16:19 /tmp
+drwxr-xr-x   - hduser supergroup          0 2019-08-01 16:03 /user
+hduser@bmsce-Precision-T1700:/usr/local/hadoop/sbin$ hadoop fs mkdir /rgs
+mkdir: Unknown command
+Did you mean -mkdir?  This command begins with a dash.
+hduser@bmsce-Precision-T1700:/usr/local/hadoop/sbin$ hadoop fs -mkdir /rgs
+mkdir: `/rgs': File exists
+hduser@bmsce-Precision-T1700:/usr/local/hadoop/sbin$ hadoop fs -copyFromLocal D:/sample.txt /rgs/test.txt
+copyFromLocal: `/rgs/test.txt': File exists
+hduser@bmsce-Precision-T1700:/usr/local/hadoop/sbin$ hadoop jar /home/hduser/Desktop/Jwordcount.jar WCDriver input output
+Not a valid JAR: /home/hduser/Desktop/Jwordcount.jar
+hduser@bmsce-Precision-T1700:/usr/local/hadoop/sbin$ hadoop jar /home/hduser/Desktop/WordCount.jar WCDriver input output
+Exception in thread "main" java.lang.ClassNotFoundException: WCDriver
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:382)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:418)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:351)
+	at java.lang.Class.forName0(Native Method)
+	at java.lang.Class.forName(Class.java:348)
+	at org.apache.hadoop.util.RunJar.run(RunJar.java:214)
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:136)
+hduser@bmsce-Precision-T1700:/usr/local/hadoop/sbin$ hadoop fs -ls /output/
+Found 2 items
+-rw-r--r--   1 hduser supergroup          0 2022-06-14 10:14 /output/_SUCCESS
+-rw-r--r--   1 hduser supergroup         78 2022-06-14 10:14 /output/part-00000
+hduser@bmsce-Precision-T1700:/usr/local/hadoop/sbin$ hadoop fs -cat /output/part-00000
+Balaji	1
+are	1
+brother	1
+family	1
+hi	1
+how	5
+is	4
+job	1
+sister	1
+you	1
+your	4
